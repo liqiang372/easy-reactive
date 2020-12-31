@@ -1,22 +1,19 @@
 import Head from 'next/head';
 import { SidePanel } from '../components/SidePanel';
+import { Layout } from '../components/Layout';
 
 export default function Home() {
   return (
     <div className="page">
-      <Head>
-        <title>Easy Reactive</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <SidePanel />
-      <main>
-        <div>
-          <h1 className="title">
-            <a>Welcome to Easy Reactive</a>
-          </h1>
-        </div>
-      </main>
+      <Layout>
+        <main>
+          <div>
+            <h1 className="title">
+              <a>Welcome to Easy Reactive</a>
+            </h1>
+          </div>
+        </main>
+      </Layout>
 
       <style jsx>{`
         .container {

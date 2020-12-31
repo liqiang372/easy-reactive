@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Rect } from '../components/Rect';
-import { SidePanel } from '../components/SidePanel';
+import { Layout } from '../components/Layout';
 import * as d3 from 'd3';
 
 export default function DebounceTime() {
@@ -44,8 +44,7 @@ export default function DebounceTime() {
     });
   };
   return (
-    <div className="page">
-      <SidePanel />
+    <Layout title="Debounce Time">
       <main>
         <div>
           <h1>DebounceTime</h1>
@@ -61,6 +60,6 @@ export default function DebounceTime() {
           </div>
         </div>
       </main>
-    </div>
+    </Layout>
   );
 }
