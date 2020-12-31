@@ -1,0 +1,29 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Content-font, Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+}
+
+main {
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+
+.animation {
+  width: 800px;
+  height: 300px;
+}
