@@ -46,18 +46,16 @@ export default function DebounceTime() {
   return (
     <Layout title="Debounce Time">
       <main>
+        <h1>DebounceTime</h1>
+        <div className="demo">
+          <svg ref={svgRef} className="animation">
+            <g>
+              <Rect x={200} y={150} width={200} height={20} />
+            </g>
+          </svg>
+        </div>
         <div>
-          <h1>DebounceTime</h1>
-          <div className="demo">
-            <svg ref={svgRef} className="animation">
-              <g>
-                <Rect x={200} y={150} width={200} height={20} />
-              </g>
-            </svg>
-          </div>
-          <div>
-            <button onClick={emit}>Emit</button>
-          </div>
+          <button onClick={emit}>Emit</button>
         </div>
       </main>
     </Layout>

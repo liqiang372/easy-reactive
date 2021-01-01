@@ -13,6 +13,11 @@ export function SidePanel() {
             <a>DebounceTime</a>
           </Link>
         </li>
+        <li>
+          <Link href="/zip">
+            <a>Zip</a>
+          </Link>
+        </li>
       </ul>
       <style jsx>{`
         .container {
