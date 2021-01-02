@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Rect } from '../components/Rect';
+import { Operator } from '../components/Operator';
 import { Layout } from '../components/Layout';
 import * as d3 from 'd3';
 
@@ -50,7 +51,7 @@ export default function DebounceTime() {
         <div className="demo">
           <svg ref={svgRef} className="animation">
             <g>
-              <Rect x={200} y={150} width={200} height={20} />
+              <Operator x={200} y={135} width={200} height={50} />
             </g>
           </svg>
         </div>

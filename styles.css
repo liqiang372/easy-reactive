@@ -13,11 +13,6 @@ a {
   text-decoration: none;
 }
 
-.page {
-  min-height: 100vh;
-  display: flex;
-}
-
 main {
   flex: 1 1 auto;
   padding: 1rem;

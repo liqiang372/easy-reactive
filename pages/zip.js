@@ -1,6 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { Rect } from '../components/Rect';
+import { Operator } from '../components/Operator';
 import { Subject, zip } from 'rxjs';
 import { Stream } from '../components/Stream';
 import { Queue } from '../components/Queue';
@@ -186,7 +187,7 @@ export default class ZipDemo extends React.Component {
                   key="b"
                 />
                 <g transform="translate(200, -20)">
-                  <Rect width={90} height={90} />
+                  <Operator width={90} height={90} />
                   <Queue
                     className="queueA"
                     data={queueA}
