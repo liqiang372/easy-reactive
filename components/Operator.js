@@ -1,4 +1,5 @@
 import React from 'react';
+import { COLORS } from '../constants';
 function getPointsForPath(points) {
   let res = '';
   for (let i = 0; i < points.length; i++) {
@@ -43,9 +44,9 @@ export function Operator({
 
   return (
     <g>
-      <path d={frontPath} fill={'#f2f2f1'} />
-      <path d={topPath} fill={'#dcdcdc'} />
-      <path d={rightPath} fill={'#b1b1b1'} />
+      <path d={frontPath} fill={COLORS.GREY_1} />
+      <path d={topPath} fill={COLORS.GREY_2} />
+      <path d={rightPath} fill={COLORS.GREY_3} />
       <path d={outlinePath} fill={'transparent'} stroke={stroke} />
     </g>
   );

@@ -6,6 +6,7 @@ import { Subject, zip } from 'rxjs';
 import { Stream } from '../components/Stream';
 import { Queue } from '../components/Queue';
 import { Layout } from '../components/Layout';
+import { Output } from '../components/Output';
 
 export default class ZipDemo extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ export default class ZipDemo extends React.Component {
         [selectionA, selectionB].forEach((selection, index) => {
           selection
             .select('rect')
-            .style('fill', 'yellow')
+            .style('fill', '#fae560')
             .transition()
             .delay(500)
             .on('end', () => {
@@ -207,22 +208,29 @@ export default class ZipDemo extends React.Component {
                 </g>
               </g>
             </svg>
-          </div>
-
-          <div>
-            <div>
-              Ouput:{' '}
-              {outputA && outputB ? (
-                <span>[{`${outputA.text}, ${outputB.text}`}]</span>
-              ) : (
-                'Empty'
-              )}
+            <div className="output-container">
+              <Output width={100} height={50}>
+                {outputA && outputB ? (
+                  <span>[{`${outputA.text}, ${outputB.text}`}]</span>
+                ) : (
+                  'Empty'
+                )}
+              </Output>
             </div>
+          </div>
+          <div>
             <button onClick={this.emitA}>Emit A</button>
             <button onClick={this.emitB}>Emit B</button>
             <button onClick={this.reset}>Reset</button>
           </div>
         </main>
+        <style jsx>{`
+          .output-container {
+            position: absolute;
+            top: 0;
+            left: 500px;
+          }
+        `}</style>
       </Layout>
     );
   }
