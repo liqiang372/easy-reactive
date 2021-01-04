@@ -18,6 +18,11 @@ export function SidePanel() {
             <a>Zip</a>
           </Link>
         </li>
+        <li>
+          <Link href="/combineLatest">
+            <a>CombineLatest</a>
+          </Link>
+        </li>
       </ul>
       <style jsx>{`
         .container {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { COLORS } from '../constants';
 import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
 
 function getPointsForPath(points) {
   let res = '';
