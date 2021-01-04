@@ -1,5 +1,3 @@
-import Head from 'next/head';
-import { SidePanel } from '../components/SidePanel';
 import { Layout } from '../components/Layout';
 
 export default function Home() {

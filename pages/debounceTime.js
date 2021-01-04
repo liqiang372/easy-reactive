@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Rect } from '../components/Rect';
 import { Operator } from '../components/Operator';
 import { Layout } from '../components/Layout';
 import * as d3 from 'd3';

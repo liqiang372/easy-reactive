@@ -24,8 +24,14 @@ export function SidePanel() {
           </Link>
         </li>
       </ul>
+      <div className="github">
+        <a href="https://github.com/liqiang372/easy-reactive" target="_blank">
+          Github
+        </a>
+      </div>
       <style jsx>{`
         .container {
+          position: relative;
           width: 260px;
           box-shadow: 6px 0 6px rgba(0, 0, 0, 0.1);
         }
@@ -36,6 +42,16 @@ export function SidePanel() {
         li {
           list-style: none;
           margin-top: 1rem;
+        }
+
+        .github {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 50px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       `}</style>
     </div>
