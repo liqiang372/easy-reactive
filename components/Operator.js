@@ -1,5 +1,8 @@
 import React from 'react';
 import { COLORS } from '../constants';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+
 function getPointsForPath(points) {
   let res = '';
   for (let i = 0; i < points.length; i++) {
@@ -24,6 +27,7 @@ export function Operator({
   stroke = 'black',
   side,
   angle,
+  tooltip,
   className,
 }) {
   angle = (angle * Math.PI) / 180;
@@ -41,8 +45,7 @@ export function Operator({
   const frontPath = getPointsForPath([p1, p2, p4, p3, p1]);
   const topPath = getPointsForPath([p1, p5, p6, p2, p1]);
   const rightPath = getPointsForPath([p2, p6, p7, p4, p2]);
-
-  return (
+  const rectEl = (
     <g>
       <path d={frontPath} fill={COLORS.GREY_1} />
       <path d={topPath} fill={COLORS.GREY_2} />
@@ -50,6 +53,7 @@ export function Operator({
       <path d={outlinePath} fill={'transparent'} stroke={stroke} />
     </g>
   );
+  return tooltip ? <Tippy content={tooltip}>{rectEl}</Tippy> : rectEl;
 }
 
 Operator.defaultProps = {

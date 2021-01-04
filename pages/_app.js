@@ -1,4 +1,5 @@
 import '../styles.css';
+import 'tippy.js/dist/tippy.css';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';

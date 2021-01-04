@@ -188,7 +188,7 @@ export default class ZipDemo extends React.Component {
                   key="b"
                 />
                 <g transform="translate(200, -20)">
-                  <Operator width={90} height={90} />
+                  <Operator width={90} height={90} tooltip="zip" />
                   <Queue
                     className="queueA"
                     data={queueA}
