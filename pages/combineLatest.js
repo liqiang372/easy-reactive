@@ -64,7 +64,7 @@ export default class CombineLatest extends React.Component {
       return {
         [name]: prevState[name].concat({
           key,
-          text: `${label} ${key} `,
+          text: `${label}${key}`,
         }),
       };
     });
