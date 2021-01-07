@@ -16,6 +16,7 @@ a {
 main {
   flex: 1 1 auto;
   padding: 1rem;
+  max-width: 1024px;
 }
 
 .demo {

@@ -7,10 +7,22 @@ import { Stream } from '../components/Stream';
 import { Queue } from '../components/Queue';
 import { Layout } from '../components/Layout';
 import { Output } from '../components/Output';
+import { Markdown } from '../components/Markdown';
 
+const DOC = `
+The name explains itself, this operator will emit whatever emitted by a,
+but also with the latest value from b. However, if it hasn't got
+any value from b yet, then the operator won't emit anything.
+~~~js
+a$.withLatestFrom(b$).subscribe(([a, b]) => {
+  console.log(a, b);
+})
+~~~
+`
 export default class CombineLatest extends React.Component {
   constructor(props) {
     super(props);
+    this.doc = undefined;
     this.a$ = new Subject();
     this.b$ = new Subject();
     this.state = {
@@ -158,8 +170,8 @@ export default class CombineLatest extends React.Component {
                 {outputA && outputB ? (
                   <span>[{`${outputA.text}, ${outputB.text}`}]</span>
                 ) : (
-                  'Empty'
-                )}
+                    'Empty'
+                  )}
               </Output>
             </div>
           </div>
@@ -168,6 +180,7 @@ export default class CombineLatest extends React.Component {
             <button onClick={this.emitB}>Emit B</button>
             <button onClick={this.reset}>Reset</button>
           </div>
+          <Markdown source={DOC} />
         </main>
         <style jsx>{`
           .output-container {
