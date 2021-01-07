@@ -23,6 +23,11 @@ export function SidePanel() {
             <a>CombineLatest</a>
           </Link>
         </li>
+        <li>
+          <Link href="/withLatestFrom">
+            <a>WithLatestFrom</a>
+          </Link>
+        </li>
       </ul>
       <div className="github">
         <a href="https://github.com/liqiang372/easy-reactive" target="_blank">

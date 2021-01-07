@@ -1,7 +1,8 @@
 import React from 'react';
 import * as d3 from 'd3';
 import { Operator } from '../components/Operator';
-import { Subject, combineLatest } from 'rxjs';
+import { Subject } from 'rxjs';
+import { withLatestFrom } from 'rxjs/operators';
 import { Stream } from '../components/Stream';
 import { Queue } from '../components/Queue';
 import { Layout } from '../components/Layout';
@@ -21,18 +22,16 @@ export default class CombineLatest extends React.Component {
       outputB: undefined,
       queueUpdateMode: undefined,
     };
-    this.subscribeWithCombineLatest();
+    this.subscribeWithOperator();
   }
 
-  subscribeWithCombineLatest = () => {
-    this.combineLatestSub = combineLatest(this.a$, this.b$).subscribe(
-      ([a, b]) => {
-        this.setState({
-          outputA: a,
-          outputB: b,
-        });
-      }
-    );
+  subscribeWithOperator = () => {
+    this.sub = this.a$.pipe(withLatestFrom(this.b$)).subscribe(([a, b]) => {
+      this.setState({
+        outputA: a,
+        outputB: b,
+      });
+    });
   };
 
   emitA = () => {
@@ -91,9 +90,9 @@ export default class CombineLatest extends React.Component {
       outputA: undefined,
       outputB: undefined,
     });
-    if (this.combineLatestSub) {
-      this.combineLatestSub.unsubscribe();
-      this.subscribeWithCombineLatest();
+    if (this.sub) {
+      this.sub.unsubscribe();
+      this.subscribeWithOperator();
     }
   };
 
@@ -111,7 +110,7 @@ export default class CombineLatest extends React.Component {
       <Layout title="Debounce Time">
         <main>
           {' '}
-          <h1>CombineLatest</h1>
+          <h1>withLatestFrom</h1>
           <div className="demo">
             <svg className="animation">
               <g transform="translate(150, 100)">
