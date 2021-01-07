@@ -9,6 +9,7 @@ export default function Home() {
             <h1 className="title">
               <a>Welcome to Easy Reactive</a>
             </h1>
+            <p>Reactive pattern has never been so easy</p>
           </div>
         </main>
       </Layout>

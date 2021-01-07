@@ -6,7 +6,19 @@ import { Stream } from '../components/Stream';
 import { Queue } from '../components/Queue';
 import { Layout } from '../components/Layout';
 import { Output } from '../components/Output';
+import { Markdown } from '../components/Markdown';
 
+const DOC = `
+\`combineLatest\` is like enhanced version of \`withLatestFrom\`, all sides 
+get same chance to get emitted with the latest of others.
+
+~~~js
+combineLatest(this.a$, this.b$).subscribe(
+  ([a, b]) => {
+    console.log(a, b);
+  }
+~~~
+`;
 export default class CombineLatest extends React.Component {
   constructor(props) {
     super(props);
@@ -52,7 +64,7 @@ export default class CombineLatest extends React.Component {
       return {
         [name]: prevState[name].concat({
           key,
-          text: `${label}${key}`,
+          text: `${label} ${key} `,
         }),
       };
     });
@@ -157,10 +169,10 @@ export default class CombineLatest extends React.Component {
             <div className="output-container">
               <Output width={100} height={50}>
                 {outputA && outputB ? (
-                  <span>[{`${outputA.text}, ${outputB.text}`}]</span>
+                  <span>[{`${outputA.text}, ${outputB.text} `}]</span>
                 ) : (
-                  'Empty'
-                )}
+                    'Empty'
+                  )}
               </Output>
             </div>
           </div>
@@ -169,6 +181,7 @@ export default class CombineLatest extends React.Component {
             <button onClick={this.emitB}>Emit B</button>
             <button onClick={this.reset}>Reset</button>
           </div>
+          <Markdown source={DOC} />
         </main>
         <style jsx>{`
           .output-container {

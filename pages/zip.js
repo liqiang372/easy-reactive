@@ -7,6 +7,16 @@ import { Stream } from '../components/Stream';
 import { Queue } from '../components/Queue';
 import { Layout } from '../components/Layout';
 import { Output } from '../components/Output';
+import { Markdown } from '../components/Markdown';
+
+const DOC = `
+Zip is like one assembly station, one patty and one bread must both be ready to go
+~~~js
+zip(a$, b$).subscribe(([a, b]) => {
+  console.log(a, b)
+});
+~~~
+`;
 
 export default class ZipDemo extends React.Component {
   constructor(props) {
@@ -223,6 +233,7 @@ export default class ZipDemo extends React.Component {
             <button onClick={this.emitB}>Emit B</button>
             <button onClick={this.reset}>Reset</button>
           </div>
+          <Markdown source={DOC} />
         </main>
         <style jsx>{`
           .output-container {

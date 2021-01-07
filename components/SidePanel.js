@@ -19,13 +19,13 @@ export function SidePanel() {
           </Link>
         </li>
         <li>
-          <Link href="/combineLatest">
-            <a>CombineLatest</a>
+          <Link href="/withLatestFrom">
+            <a>WithLatestFrom</a>
           </Link>
         </li>
         <li>
-          <Link href="/withLatestFrom">
-            <a>WithLatestFrom</a>
+          <Link href="/combineLatest">
+            <a>CombineLatest</a>
           </Link>
         </li>
       </ul>

@@ -10,9 +10,9 @@ import { Output } from '../components/Output';
 import { Markdown } from '../components/Markdown';
 
 const DOC = `
-The name explains itself, this operator will emit whatever emitted by a,
+The name explains itself, \`withLatestFrom\` will emit whatever emitted by a,
 but also with the latest value from b. However, if it hasn't got
-any value from b yet, then the operator won't emit anything.
+any value from b yet, then won't emit anything.
 ~~~js
 a$.withLatestFrom(b$).subscribe(([a, b]) => {
   console.log(a, b);
