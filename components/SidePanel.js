@@ -10,22 +10,27 @@ export function SidePanel() {
         </li>
         <li>
           <Link href="/debounceTime">
-            <a>DebounceTime</a>
+            <a>debounceTime</a>
           </Link>
         </li>
         <li>
           <Link href="/zip">
-            <a>Zip</a>
+            <a>zip</a>
           </Link>
         </li>
         <li>
           <Link href="/withLatestFrom">
-            <a>WithLatestFrom</a>
+            <a>withLatestFrom</a>
           </Link>
         </li>
         <li>
           <Link href="/combineLatest">
-            <a>CombineLatest</a>
+            <a>combineLatest</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/forkJoin">
+            <a>forkJoin</a>
           </Link>
         </li>
       </ul>

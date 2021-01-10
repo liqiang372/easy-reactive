@@ -44,7 +44,7 @@ export default function DebounceTime() {
     });
   };
   return (
-    <Layout title="Debounce Time">
+    <Layout title="debounceTime">
       <main>
         <h1>DebounceTime</h1>
         <div className="demo">

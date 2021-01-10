@@ -34,10 +34,10 @@ export default class CombineLatest extends React.Component {
       outputB: undefined,
       queueUpdateMode: undefined,
     };
-    this.subscribeWithOperator();
+    this.setUpOperator();
   }
 
-  subscribeWithOperator = () => {
+  setUpOperator = () => {
     this.sub = this.a$.pipe(withLatestFrom(this.b$)).subscribe(([a, b]) => {
       this.setState({
         outputA: a,
@@ -104,7 +104,7 @@ export default class CombineLatest extends React.Component {
     });
     if (this.sub) {
       this.sub.unsubscribe();
-      this.subscribeWithOperator();
+      this.setUpOperator();
     }
   };
 
@@ -119,7 +119,7 @@ export default class CombineLatest extends React.Component {
       outputB,
     } = this.state;
     return (
-      <Layout title="Debounce Time">
+      <Layout title="withLatestFrom">
         <main>
           {' '}
           <h1>withLatestFrom</h1>
