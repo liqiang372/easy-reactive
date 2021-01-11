@@ -19,7 +19,6 @@ forkJoin(a$, b$).subscrine([a, b] => {
 export default class ForkJoin extends React.Component {
   constructor(props) {
     super(props);
-    this.doc = undefined;
     this.a$ = new Subject();
     this.b$ = new Subject();
     this.state = {
@@ -32,6 +31,12 @@ export default class ForkJoin extends React.Component {
       queueUpdateMode: undefined,
     };
     this.setUpOperator();
+  }
+
+  componentWillUnmount() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   setUpOperator = () => {

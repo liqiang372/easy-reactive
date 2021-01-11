@@ -22,7 +22,6 @@ a$.withLatestFrom(b$).subscribe(([a, b]) => {
 export default class CombineLatest extends React.Component {
   constructor(props) {
     super(props);
-    this.doc = undefined;
     this.a$ = new Subject();
     this.b$ = new Subject();
     this.state = {
@@ -35,6 +34,12 @@ export default class CombineLatest extends React.Component {
       queueUpdateMode: undefined,
     };
     this.setUpOperator();
+  }
+
+  componentWillUnmount() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   setUpOperator = () => {

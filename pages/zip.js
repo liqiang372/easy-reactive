@@ -18,7 +18,7 @@ zip(a$, b$).subscribe(([a, b]) => {
 ~~~
 `;
 
-export default class ZipDemo extends React.Component {
+export default class Zip extends React.Component {
   constructor(props) {
     super(props);
     this.zipQueue = [];
@@ -35,6 +35,12 @@ export default class ZipDemo extends React.Component {
       queueUpdateMode: undefined,
     };
     this.setUpOperator();
+  }
+
+  componentWillUnmount() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   setUpOperator = () => {

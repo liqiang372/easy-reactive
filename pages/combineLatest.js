@@ -33,11 +33,17 @@ export default class CombineLatest extends React.Component {
       outputB: undefined,
       queueUpdateMode: undefined,
     };
-    this.subscribeWithCombineLatest();
+    this.setUpOperator();
   }
 
-  subscribeWithCombineLatest = () => {
-    this.combineLatestSub = combineLatest(this.a$, this.b$).subscribe(
+  componentWillUnmount() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
+
+  setUpOperator = () => {
+    this.sub = combineLatest(this.a$, this.b$).subscribe(
       ([a, b]) => {
         this.setState({
           outputA: a,
@@ -103,9 +109,9 @@ export default class CombineLatest extends React.Component {
       outputA: undefined,
       outputB: undefined,
     });
-    if (this.combineLatestSub) {
-      this.combineLatestSub.unsubscribe();
-      this.subscribeWithCombineLatest();
+    if (this.sub) {
+      this.sub.unsubscribe();
+      this.setUpOperator();
     }
   };
 
