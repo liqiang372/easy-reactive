@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import * as d3 from 'd3';
-import { Rect } from '../components/Rect';
 import { Operator } from '../components/Operator';
 import { Subject, zip } from 'rxjs';
 import { Stream } from '../components/Stream';
@@ -8,6 +7,7 @@ import { Queue } from '../components/Queue';
 import { Layout } from '../components/Layout';
 import { Output } from '../components/Output';
 import { Markdown } from '../components/Markdown';
+import { useStream } from '../hooks/useStream';
 
 const DOC = `
 Zip is like one assembly station, one patty and one bread must both be ready to go
@@ -17,43 +17,74 @@ zip(a$, b$).subscribe(([a, b]) => {
 });
 ~~~
 `;
+const a$ = new Subject();
+const b$ = new Subject();
 
-export default class Zip extends React.Component {
-  constructor(props) {
-    super(props);
-    this.zipQueue = [];
-    this.isPullingFromZip = false;
-    this.a$ = new Subject();
-    this.b$ = new Subject();
-    this.state = {
-      tickA: [],
-      tickB: [],
-      queueA: [],
-      queueB: [],
-      outputA: undefined,
-      outputB: undefined,
-      queueUpdateMode: undefined,
-    };
-    this.setUpOperator();
-  }
+const INITIAL_QUEUE_STATE = {
+  queueA: [],
+  queueB: [],
+  zipQueue: [],
+  queueUpdateMode: undefined,
+  outputA: undefined,
+  outputB: undefined,
+};
 
-  componentWillUnmount() {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
-  }
+export default function Zip() {
+  const [emit, tickA, tickB] = useStream(2);
+  const [
+    { queueA, queueB, zipQueue, queueUpdateMode, outputA, outputB },
+    setState,
+  ] = useState(INITIAL_QUEUE_STATE);
+  const sub = useRef(null);
+  const isPullingFromZip = useRef(false);
 
-  setUpOperator = () => {
-    this.sub = zip(this.a$, this.b$).subscribe(([a, b]) => {
-      this.zipQueue.push([a, b]);
-      this.pullFromZip();
+  const setUpOperator = () => {
+    return zip(a$, b$).subscribe(([a, b]) => {
+      setState((prevState) => {
+        return {
+          ...prevState,
+          zipQueue: prevState.zipQueue.concat([[a, b]]),
+        };
+      });
     });
   };
 
-  pullFromZip = () => {
-    if (!this.isPullingFromZip && this.zipQueue.length > 0) {
-      this.isPullingFromZip = true;
-      const [a, b] = this.zipQueue.shift();
+  const updateQueue = (which, data) => {
+    const stream$ = which === 'a' ? a$ : b$;
+    stream$.next(data);
+    const updateName = which === 'a' ? 'queueA' : 'queueB';
+
+    setState((prevState) => {
+      return {
+        ...prevState,
+        [updateName]: prevState[updateName].concat(data),
+        queueUpdateMode: 'enter',
+      };
+    });
+  };
+
+  const reset = () => {
+    d3.select('.animation').selectAll('*').interrupt();
+    emit('reset');
+    setState(INITIAL_QUEUE_STATE);
+    isPullingFromZip.current = false;
+    if (sub.current) {
+      sub.current.unsubscribe();
+      sub.current = setUpOperator();
+    }
+  };
+
+  useEffect(() => {
+    sub.current = setUpOperator();
+    return () => {
+      sub.current.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isPullingFromZip.current && zipQueue.length > 0) {
+      isPullingFromZip.current = true;
+      const [a, b] = zipQueue[0];
       setTimeout(() => {
         const selectionA = d3.select('.queueA g');
         const selectionB = d3.select('.queueB g');
@@ -71,184 +102,89 @@ export default class Zip extends React.Component {
                 .style('transform', 'translateY(80px)')
                 .on('end', () => {
                   if (index === 0) {
-                    this.setState(
-                      (prevState) => {
-                        return {
-                          queueA: prevState.queueA.filter(
-                            (d) => d.key !== a.key
-                          ),
-                          queueB: prevState.queueB.filter(
-                            (d) => d.key !== b.key
-                          ),
-                          queueUpdateMode: undefined,
-                          outputA: a,
-                          outputB: b,
-                        };
-                      },
-                      () => {
-                        this.isPullingFromZip = false;
-                        this.pullFromZip();
-                      }
-                    );
+                    isPullingFromZip.current = false;
+                    setState((prevState) => {
+                      return {
+                        ...prevState,
+                        queueA: prevState.queueA.filter((d) => d.key !== a.key),
+                        queueB: prevState.queueB.filter((d) => d.key !== b.key),
+                        queueUpdateMode: undefined,
+                        zipQueue: prevState.zipQueue.slice(1),
+                        outputA: a,
+                        outputB: b,
+                      };
+                    });
                   }
                 });
             });
         });
       });
     }
-  };
+  }, [zipQueue]);
 
-  emitA = () => {
-    this.emit('a');
-  };
-
-  emitB = () => {
-    this.emit('b');
-  };
-
-  emit = (label) => {
-    const name = `tick${label.toUpperCase()}`;
-    this.setState((prevState) => {
-      const lastTick = prevState[name][prevState[name].length - 1];
-      const lastKey = lastTick ? lastTick.key : -1;
-      const key = lastKey + 1;
-      return {
-        [name]: prevState[name].concat({
-          key,
-          text: `${label}${key}`,
-        }),
-      };
-    });
-  };
-
-  onAEmit = (d) => {
-    this.setState(
-      (prevState) => {
-        return {
-          queueA: prevState.queueA.concat(d),
-          queueUpdateMode: 'enter',
-        };
-      },
-      () => {
-        this.a$.next(d);
-      }
-    );
-  };
-
-  onBEmit = (d) => {
-    this.setState(
-      (prevState) => {
-        return {
-          queueB: prevState.queueB.concat(d),
-          queueUpdateMode: 'enter',
-        };
-      },
-      () => {
-        this.b$.next(d);
-      }
-    );
-  };
-
-  reset = () => {
-    this.zipQueue = [];
-    // cancel all running transitions
-    d3.select('.animation').selectAll('*').interrupt();
-    this.isPullingFromZip = false;
-    this.setState({
-      tickA: [],
-      tickB: [],
-      queueA: [],
-      queueB: [],
-      outputA: undefined,
-      outputB: undefined,
-    });
-    if (this.sub) {
-      this.sub.unsubscribe();
-      this.setUpOperator();
-    }
-  };
-
-  render() {
-    const {
-      tickA,
-      tickB,
-      queueA,
-      queueB,
-      queueUpdateMode,
-      outputA,
-      outputB,
-    } = this.state;
-    return (
-      <Layout title="zip">
-        <main>
-          <h1>Zip</h1>
-          <div className="demo">
-            <svg className="animation">
-              <g transform="translate(150, 100)">
-                <Stream
-                  data={tickA}
-                  x={0}
-                  y={0}
-                  width={200}
-                  height={20}
-                  onEmit={this.onAEmit}
+  return (
+    <Layout>
+      <main>
+        <h1>Zip</h1>
+        <div className="demo">
+          <svg className="animation">
+            <g transform="translate(150, 100)">
+              <Stream
+                data={tickA}
+                x={0}
+                y={0}
+                width={200}
+                height={20}
+                onEmit={(d) => updateQueue('a', d)}
+                key="a"
+              />
+              <Stream
+                data={tickB}
+                x={0}
+                y={30}
+                width={200}
+                height={20}
+                onEmit={(d) => updateQueue('b', d)}
+                key="b"
+              />
+              <g transform="translate(200, -20)">
+                <Operator width={90} height={90} tooltip="zip" />
+                <Queue
+                  className="queueA"
+                  data={queueA}
+                  x={10}
+                  y={20}
+                  mode={queueUpdateMode}
                   key="a"
                 />
-                <Stream
-                  data={tickB}
-                  x={0}
-                  y={30}
-                  width={200}
-                  height={20}
-                  onEmit={this.onBEmit}
+                <Queue
+                  className="queueB"
+                  data={queueB}
+                  x={10}
+                  y={50}
+                  mode={queueUpdateMode}
                   key="b"
                 />
-                <g transform="translate(200, -20)">
-                  <Operator width={90} height={90} tooltip="zip" />
-                  <Queue
-                    className="queueA"
-                    data={queueA}
-                    x={10}
-                    y={20}
-                    mode={queueUpdateMode}
-                    key="a"
-                  />
-                  <Queue
-                    className="queueB"
-                    data={queueB}
-                    x={10}
-                    y={50}
-                    mode={queueUpdateMode}
-                    key="b"
-                  />
-                </g>
               </g>
-            </svg>
-            <div className="output-container">
-              <Output width={100} height={50}>
-                {outputA && outputB ? (
-                  <span>[{`${outputA.text}, ${outputB.text}`}]</span>
-                ) : (
-                    'Empty'
-                  )}
-              </Output>
-            </div>
+            </g>
+          </svg>
+          <div className="output-container">
+            <Output width={100} height={50}>
+              {outputA && outputB ? (
+                <span>[{`${outputA.text}, ${outputB.text}`}]</span>
+              ) : (
+                'Empty'
+              )}
+            </Output>
           </div>
-          <div>
-            <button onClick={this.emitA}>Emit A</button>
-            <button onClick={this.emitB}>Emit B</button>
-            <button onClick={this.reset}>Reset</button>
-          </div>
-          <Markdown source={DOC} />
-        </main>
-        <style jsx>{`
-          .output-container {
-            position: absolute;
-            top: 0;
-            left: 500px;
-          }
-        `}</style>
-      </Layout>
-    );
-  }
+        </div>
+        <div>
+          <button onClick={() => emit('a')}>Emit A</button>
+          <button onClick={() => emit('b')}>Emit B</button>
+          <button onClick={reset}>Reset</button>
+        </div>
+        <Markdown source={DOC} />
+      </main>
+    </Layout>
+  );
 }
