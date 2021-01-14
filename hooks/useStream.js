@@ -6,7 +6,7 @@ export function useStream(numOfStreams) {
       .map(() => [])
   );
 
-  const emit = (label) => {
+  const emit = (label, options = { complete: false }) => {
     if (label === 'reset') {
       updateTickList(
         Array(tickList.length)
@@ -20,11 +20,16 @@ export function useStream(numOfStreams) {
         if (i === index) {
           const lastTick = ticks[ticks.length - 1];
           const lastKey = lastTick ? lastTick.key : -1;
+          const lastText = lastTick && lastTick.text;
+          if (lastText === 'C') {
+            return ticks;
+          }
           const key = lastKey + 1;
+          const text = options.complete ? 'C' : `${label}${key}`;
           return ticks.concat([
             {
               key,
-              text: `${label}${key}`,
+              text
             },
           ]);
         }
