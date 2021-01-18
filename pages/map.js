@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { Operator } from '../components/Operator';
 import { Subject } from 'rxjs';
@@ -7,6 +7,8 @@ import { Stream } from '../components/Stream';
 import { Layout } from '../components/Layout';
 import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
+import { Gear } from '../components/Gear';
+import { useDebouncedCallback } from 'use-debounce';
 
 const DOC = `
 ~~~js
@@ -20,9 +22,13 @@ a$.pipe(
 
 const a$ = new Subject();
 
+const INITIAL_STATE = {
+  rotate: false
+}
 
 export default function Map() {
   const [emit, tickA, tickB] = useStream(2);
+  const [{ rotate }, setState] = useState(INITIAL_STATE);
   const sub = useRef(null);
   const setUpOperator = () => {
     return a$.pipe(
@@ -34,6 +40,7 @@ export default function Map() {
 
   const reset = () => {
     d3.select('.animation').selectAll('*').interrupt();
+    setState(INITIAL_STATE);
     emit('reset');
     if (sub.current) {
       sub.current.unsubscribe();
@@ -41,11 +48,21 @@ export default function Map() {
     }
   };
 
+  const setRotateDebounced = useDebouncedCallback(() => {
+    setState({
+      rotate: false
+    })
+  }, 1000)
+
   const onAEmit = useCallback((d) => {
+    setState({
+      rotate: true,
+    });
     emit('a', { itemToDelete: d })
+    setRotateDebounced.callback();
     setTimeout(() => {
       emit('b');
-    }, 1000)
+    }, 1000);
   }, [emit]);
 
   const onBEmit = useCallback((d) => {
@@ -77,6 +94,7 @@ export default function Map() {
               />
               <g transform="translate(200, -20)">
                 <Operator width={90} height={90} tooltip="map" />
+                <Gear x={24} y={24} rotate={rotate} />
               </g>
               <Stream
                 data={tickB}
