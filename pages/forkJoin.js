@@ -68,6 +68,7 @@ export default function ForkJoin() {
   };
 
   const updateQueue = (which, data) => {
+    emit(which, { itemToDelete: data });
     const stream$ = which === 'a' ? a$ : b$;
     if (data.text === 'C') {
       stream$.complete();

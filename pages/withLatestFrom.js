@@ -15,7 +15,9 @@ const DOC = `
 but also with the latest value from b. However, if it hasn't got
 any value from b yet, then won't emit anything.
 ~~~js
-a$.withLatestFrom(b$).subscribe(([a, b]) => {
+a$.pipe(
+  withLatestFrom(b$)
+).subscribe(([a, b]) => {
   console.log(a, b);
 })
 ~~~
@@ -49,6 +51,7 @@ export default function WithLatestFrom() {
   };
 
   const updateQueue = (which, data) => {
+    emit(which, { itemToDelete: data });
     const stream$ = which === 'a' ? a$ : b$;
     stream$.next(data);
     const updateName = which === 'a' ? 'queueA' : 'queueB';

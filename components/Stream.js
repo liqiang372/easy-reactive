@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, memo } from 'react';
 import { Rect } from './Rect';
 import * as d3 from 'd3';
 
-export const Stream = ({
+export const Stream = memo(({
   x,
   y,
   width,
@@ -52,7 +52,7 @@ export const Stream = ({
       <Rect x={0} y={0} width={width} height={height} />
     </g>
   );
-};
+});
 
 Stream.defaultProps = {
   x: 0,

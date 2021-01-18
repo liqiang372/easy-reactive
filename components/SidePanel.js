@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Link from 'next/link';
 
-export function SidePanel() {
+export const SidePanel = memo(() => {
   return (
     <div className="container">
       <ul>
@@ -11,6 +11,11 @@ export function SidePanel() {
         <li>
           <Link href="/debounceTime">
             <a>debounceTime</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/map">
+            <a>map</a>
           </Link>
         </li>
         <li>
@@ -66,4 +71,4 @@ export function SidePanel() {
       `}</style>
     </div>
   );
-}
+});

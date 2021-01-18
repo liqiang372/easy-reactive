@@ -49,6 +49,7 @@ export default function CombineLatest() {
   };
 
   const updateQueue = (which, data) => {
+    emit(which, { itemToDelete: data });
     const stream$ = which === 'a' ? a$ : b$;
     stream$.next(data);
     const updateName = which === 'a' ? 'queueA' : 'queueB';
