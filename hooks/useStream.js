@@ -21,7 +21,8 @@ export function useStream(numOfStreams) {
       return prevState.map((ticks, i) => {
         if (i === index) {
           if (options.itemToDelete !== undefined) {
-            return ticks.filter((tick) => tick.key !== options.itemToDelete.key);
+            const index = ticks.findIndex((tick) => tick.key === options.itemToDelete.key);
+            return ticks.slice(index);
           } else {
             const lastTick = ticks[ticks.length - 1];
             const lastKey = lastTick ? lastTick.key : -1;
