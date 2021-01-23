@@ -19,6 +19,16 @@ export const SidePanel = memo(() => {
           </Link>
         </li>
         <li>
+          <Link href="/merge">
+            <a>merge</a>
+          </Link>
+        </li>
+        <li>
+          <Link href="/concat">
+            <a>concat</a>
+          </Link>
+        </li>
+        <li>
           <Link href="/zip">
             <a>zip</a>
           </Link>

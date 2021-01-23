@@ -18,8 +18,8 @@ forkJoin(a$, b$).subscrine([a, b] => {
 ~~~
 `;
 
-const a$ = new Subject();
-const b$ = new Subject();
+let a$ = new Subject();
+let b$ = new Subject();
 
 const INITIAL_QUEUE_STATE = {
   queueA: [],
@@ -68,7 +68,7 @@ export default function ForkJoin() {
   };
 
   const updateQueue = (which, data) => {
-    emit(which, { itemToDelete: data });
+    emit(which, { clearBefore: data });
     const stream$ = which === 'a' ? a$ : b$;
     if (data.text === 'C') {
       stream$.complete();
@@ -90,6 +90,8 @@ export default function ForkJoin() {
     emit('reset');
     setState(INITIAL_QUEUE_STATE);
     if (sub.current) {
+      a$ = new Subject();
+      b$ = new Subject();
       sub.current.unsubscribe();
       sub.current = setUpOperator();
     }

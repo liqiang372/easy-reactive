@@ -12,6 +12,7 @@ export const Stream = memo(({
   startOffset,
   endOffset,
   onEmit,
+  fill
 }) => {
   const gRef = useRef(null);
   useEffect(() => {
@@ -48,8 +49,8 @@ export const Stream = memo(({
     items.exit().remove();
   }, [data, width, duration]);
   return (
-    <g ref={gRef} transform={`translate(${x}, ${y})`}>
-      <Rect x={0} y={0} width={width} height={height} />
+    <g ref={gRef} transform={`translate(${x}, ${y})`} style={{ transition: 'all 1s' }}>
+      <Rect x={0} y={0} width={width} height={height} fill={fill} />
     </g>
   );
 });

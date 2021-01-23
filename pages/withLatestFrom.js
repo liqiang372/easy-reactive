@@ -51,7 +51,7 @@ export default function WithLatestFrom() {
   };
 
   const updateQueue = (which, data) => {
-    emit(which, { itemToDelete: data });
+    emit(which, { clearBefore: data });
     const stream$ = which === 'a' ? a$ : b$;
     stream$.next(data);
     const updateName = which === 'a' ? 'queueA' : 'queueB';

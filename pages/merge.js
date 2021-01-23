@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { Operator } from '../components/Operator';
-import { Subject } from 'rxjs';
+import { Subject, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Stream } from '../components/Stream';
 import { Layout } from '../components/Layout';
@@ -12,83 +12,102 @@ import { useDebouncedCallback } from 'use-debounce';
 
 const DOC = `
 ~~~js
-a$.pipe(
-  map((a) => ('b' + a.substring(1)))
-).subscribe((b) => {
-  console.log(b);
+merge(a$, b$).subscribe((x) => {
+  console.log(x);
 })
 ~~~
 `;
+
+const a$ = new Subject();
+const b$ = new Subject();
+
 const INITIAL_STATE = {
   rotate: false
 }
 
-export default function Map() {
-  const [emit, tickA, tickB] = useStream(2);
-  const [{ rotate }, setState] = useState(INITIAL_STATE);
+export default function Merge() {
+  const [emit, tickA, tickB, tickC] = useStream(3);
+  const sub = useRef(null);
+  const setUpOperator = () => {
+    return merge(a$, b$).subscribe((x) => {
+      emit('c', { valueToEmit: x })
+    })
+  };
 
   const reset = () => {
     d3.select('.animation').selectAll('*').interrupt();
-    setState(INITIAL_STATE);
     emit('reset');
-
+    if (sub.current) {
+      sub.current.unsubscribe();
+      sub.current = setUpOperator();
+    }
   };
 
-  const setRotateDebounced = useDebouncedCallback(() => {
-    setState({
-      rotate: false
-    })
-  }, 1000)
 
   const onAEmit = useCallback((d) => {
-    setState({
-      rotate: true,
-    });
     emit('a', { clearBefore: d })
-    setRotateDebounced.callback();
-    setTimeout(() => {
-      emit('b');
-    }, 1000);
+    a$.next(d);
   }, [emit]);
 
   const onBEmit = useCallback((d) => {
-    emit('b', { clearBefore: d })
+    emit('b', { clearBefore: d });
+    b$.next(d);
+  }, [emit])
+
+  const onCEmit = useCallback((d) => {
+    emit('c', { clearBefore: d })
   })
 
+  useEffect(() => {
+    sub.current = setUpOperator();
+    return () => {
+      sub.current.unsubscribe();
+    };
+  }, []);
+
   return (
-    <Layout title="map">
+    <Layout title="merge">
       <main>
-        <h1>map</h1>
+        <h1>Merge</h1>
         <div className="demo">
           <svg className="animation">
             <g transform="translate(150, 100)">
               <Stream
                 data={tickA}
-                x={50}
-                y={10}
-                width={150}
+                x={0}
+                y={0}
+                width={200}
                 height={20}
                 onEmit={onAEmit}
                 key="a"
               />
-              <g transform="translate(200, -20)">
-                <Operator width={90} height={90} tooltip="map" />
-                <Gear x={24} y={24} rotate={rotate} />
-              </g>
               <Stream
                 data={tickB}
-                x={294}
-                y={10}
-                width={150}
+                x={0}
+                y={30}
+                width={200}
                 height={20}
                 onEmit={onBEmit}
                 key="b"
               />
+              <g transform="translate(200, -20)">
+                <Operator width={90} height={90} tooltip="merge" />
+                <Stream
+                  data={tickC}
+                  x={94}
+                  y={30}
+                  width={200}
+                  height={20}
+                  onEmit={onCEmit}
+                  key="c"
+                />
+              </g>
             </g>
           </svg>
         </div>
         <div>
           <button onClick={() => emit('a')}>Emit A</button>
+          <button onClick={() => emit('b')}>Emit B</button>
           <button onClick={reset}>Reset</button>
         </div>
         <Markdown source={DOC} />
