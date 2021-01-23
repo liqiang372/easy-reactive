@@ -8,6 +8,7 @@ import { Layout } from '../components/Layout';
 import { Output } from '../components/Output';
 import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
+import { Button } from '../components/Button';
 
 const DOC = `
 \`combineLatest\` is like enhanced version of \`withLatestFrom\`, all sides 
@@ -136,9 +137,13 @@ export default function CombineLatest() {
           </div>
         </div>
         <div>
-          <button onClick={() => emit('a')}>Emit A</button>
-          <button onClick={() => emit('b')}>Emit B</button>
-          <button onClick={reset}>Reset</button>
+          <div>
+            <Button type="reset" onClick={reset}>Reset</Button>
+          </div>
+          <div className="btn-group">
+            <Button onClick={() => emit('a')}>Emit A</Button>
+            <Button onClick={() => emit('b')}>Emit B</Button>
+          </div>
         </div>
         <Markdown source={DOC} />
       </main>

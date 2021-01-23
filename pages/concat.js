@@ -7,6 +7,7 @@ import { Layout } from '../components/Layout';
 import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
 import { COLORS } from '../constants';
+import { Button } from '../components/Button';
 
 const DOC = `
 \`concat\` will subscribe the observable one by one. It won't subscribe next one until current one is completed.
@@ -164,13 +165,21 @@ export default function Concat() {
           </svg>
         </div>
         <div>
-          <button onClick={() => emit('a')}>Emit A</button>
-          <button onClick={() => emit('a', { complete: true })}>Emit A Complete</button>
-          <button onClick={() => emit('b')}>Emit B</button>
-          <button onClick={() => emit('b', { complete: true })}>Emit B Complete</button>
-          <button onClick={() => emit('c')}>Emit C</button>
-          <button onClick={() => emit('c', { complete: true })}>Emit C Complete</button>
-          <button onClick={reset}>Reset</button>
+          <div>
+            <Button type="reset" onClick={reset}>Reset</Button>
+          </div>
+          <div className="btn-group">
+            <Button onClick={() => emit('a')}>Emit A</Button>
+            <Button onClick={() => emit('a', { complete: true })} type="complete">Complete A</Button>
+          </div>
+          <div className="btn-group">
+            <Button onClick={() => emit('b')}>Emit B</Button>
+            <Button onClick={() => emit('b', { complete: true })} type="complete">Complete B</Button>
+          </div>
+          <div className="btn-group">
+            <Button onClick={() => emit('c')}>Emit C</Button>
+            <Button onClick={() => emit('c', { complete: true })} type="complete">Complete C</Button>
+          </div>
         </div>
         <Markdown source={DOC} />
       </main>

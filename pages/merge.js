@@ -2,13 +2,11 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { Operator } from '../components/Operator';
 import { Subject, merge } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Stream } from '../components/Stream';
 import { Layout } from '../components/Layout';
 import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
-import { Gear } from '../components/Gear';
-import { useDebouncedCallback } from 'use-debounce';
+import { Button } from '../components/Button';
 
 const DOC = `
 ~~~js
@@ -106,9 +104,14 @@ export default function Merge() {
           </svg>
         </div>
         <div>
-          <button onClick={() => emit('a')}>Emit A</button>
-          <button onClick={() => emit('b')}>Emit B</button>
-          <button onClick={reset}>Reset</button>
+          <div>
+            <Button type='reset' onClick={reset}>Reset</Button>
+          </div>
+          <div className="btn-group">
+            <Button onClick={() => emit('a')}>Emit A</Button>
+            <Button onClick={() => emit('b')}>Emit B</Button>
+          </div>
+
         </div>
         <Markdown source={DOC} />
       </main>

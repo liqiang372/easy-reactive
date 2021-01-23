@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Operator } from '../components/Operator';
 import { Layout } from '../components/Layout';
+import { Button } from '../components/Button';
 import * as d3 from 'd3';
 
 export default function DebounceTime() {
@@ -55,7 +56,7 @@ export default function DebounceTime() {
           </svg>
         </div>
         <div>
-          <button onClick={emit}>Emit</button>
+          <Button onClick={emit}>Emit</Button>
         </div>
       </main>
     </Layout>

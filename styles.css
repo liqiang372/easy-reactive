@@ -33,3 +33,10 @@ main {
   width: 800px;
   height: 300px;
 }
+
+.btn-group {
+  margin-top: 10px;
+}
+.btn-group button{
+  margin-right: 10px;
+}

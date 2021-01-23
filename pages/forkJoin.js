@@ -8,6 +8,7 @@ import { Layout } from '../components/Layout';
 import { Output } from '../components/Output';
 import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
+import { Button } from '../components/Button';
 
 const DOC = `
 \`forkJoin\` only emits all values once all streams complete
@@ -161,11 +162,18 @@ export default function ForkJoin() {
           </div>
         </div>
         <div>
-          <button onClick={() => emit('a')}>Emit A</button>
-          <button onClick={() => emit('a', { complete: true })}>Emit A Complete</button>
-          <button onClick={() => emit('b')}>Emit B</button>
-          <button onClick={() => emit('b', { complete: true })}>Emit B Complete</button>
-          <button onClick={reset}>Reset</button>
+          <div>
+            <Button type="reset" onClick={reset}>Reset</Button>
+          </div>
+          <div className="btn-group">
+            <Button onClick={() => emit('a')}>Emit A</Button>
+            <Button onClick={() => emit('a', { complete: true })} type="complete">Complete A</Button>
+          </div>
+          <div className="btn-group">
+            <Button onClick={() => emit('b')}>Emit B</Button>
+            <Button onClick={() => emit('b', { complete: true })} type="complete">Complete B</Button>
+          </div>
+
         </div>
         <Markdown source={DOC} />
       </main>
