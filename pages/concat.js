@@ -8,6 +8,7 @@ import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
 import { COLORS } from '../constants';
 import { Button } from '../components/Button';
+import { getActiveStreamProps } from '../utils';
 
 const DOC = `
 \`concat\` will subscribe the observable one by one. It won't subscribe next one until current one is completed.
@@ -80,18 +81,6 @@ export default function Concat() {
     emit('d', { clearBefore: d })
   })
 
-  const getActiveStreamProps = useCallback((which) => {
-    if (which === activeStream) {
-      return {
-        fill: COLORS.PURPLE_1,
-        x: 0
-      };
-    }
-    return {
-      x: -10
-    };
-  }, [activeStream])
-
   const reset = () => {
     d3.select('.animation').selectAll('*').interrupt();
     emit('reset');
@@ -126,7 +115,7 @@ export default function Concat() {
                 width={200}
                 height={20}
                 onEmit={(d) => onEmit('a', d)}
-                {...getActiveStreamProps('a')}
+                {...getActiveStreamProps('a', activeStream)}
                 key="a"
               />
               <Stream
@@ -136,7 +125,7 @@ export default function Concat() {
                 width={200}
                 height={20}
                 onEmit={(d) => onEmit('b', d)}
-                {...getActiveStreamProps('b')}
+                {...getActiveStreamProps('b', activeStream)}
                 key="b"
               />
               <Stream
@@ -146,7 +135,7 @@ export default function Concat() {
                 width={200}
                 height={20}
                 onEmit={(d) => onEmit('c', d)}
-                {...getActiveStreamProps('c')}
+                {...getActiveStreamProps('c', activeStream)}
                 key="c"
               />
               <g transform="translate(200, -20)">
