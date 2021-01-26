@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const SidePanel = memo(() => {
   return (
-    <div className="container">
+    <div className="container fixed h-full">
       <ul className="flex flex-col px-4">
         <li>
           <Link href="/debounceTime">
@@ -53,9 +53,9 @@ export const SidePanel = memo(() => {
       </ul>
       <style jsx>{`
         .container {
-          position: relative;
           width: 220px;
           box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.1);
+          z-index: 100;
         }
         li {
           list-style: none;

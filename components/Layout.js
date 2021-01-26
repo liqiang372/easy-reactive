@@ -12,8 +12,7 @@ export function Layout({ title, children }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <hr />
-      <div className="flex-auto flex">
+      <div className="flex-auto">
         <SidePanel />
         {children}
       </div>
