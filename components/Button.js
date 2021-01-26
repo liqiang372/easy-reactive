@@ -1,9 +1,10 @@
 import React from 'react'
+import cns from 'classnames';
 
 export const Button = ({ children, onClick, type = 'emit' }) => {
   return (
     <>
-      <button className={type} onClick={onClick}>{children}</button>
+      <button className={cns(type, 'text-sm')} onClick={onClick}>{children}</button>
       <style jsx>{`
         button {
           border: none;

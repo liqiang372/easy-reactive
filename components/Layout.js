@@ -1,23 +1,22 @@
 import React from 'react';
 import { SidePanel } from './SidePanel';
+import { Navbar } from './NavBar';
 import Head from 'next/head';
 
 export function Layout({ title, children }) {
   var pageTitle = (title ? `${title} - ` : '') + 'Easy Reacative';
   return (
-    <div className="page">
+    <div className="flex flex-col min-h-screen w-full max-w-8xl mx-auto">
       <Head>
         <title>{pageTitle}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <SidePanel />
-      {children}
-      <style jsx>{`
-        .page {
-          min-height: 100vh;
-          display: flex;
-        }
-      `}</style>
+      <Navbar />
+      <hr />
+      <div className="flex-auto flex">
+        <SidePanel />
+        {children}
+      </div>
     </div>
   );
 }

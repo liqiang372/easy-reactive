@@ -1,3 +1,25 @@
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-4xl my-4;
+  }
+  h2 {
+    @apply text-2xl;
+  }
+
+  .bg-purple-1000 {
+    background-color: #c8c8f5;
+  }
+
+  .max-w-8xl {
+    max-width: 90rem;
+  }
+}
+
 html,
 body {
   padding: 0;
@@ -35,7 +57,7 @@ main {
 }
 
 .btn-group {
-  margin-top: 10px;
+  margin: 10px 0;
 }
 .btn-group button{
   margin-right: 10px;

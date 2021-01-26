@@ -4,10 +4,7 @@ import Link from 'next/link';
 export const SidePanel = memo(() => {
   return (
     <div className="container">
-      <ul>
-        <li>
-          <Link href="/">Home page</Link>
-        </li>
+      <ul className="flex flex-col px-4">
         <li>
           <Link href="/debounceTime">
             <a>debounceTime</a>
@@ -54,34 +51,15 @@ export const SidePanel = memo(() => {
           </Link>
         </li>
       </ul>
-      <div className="github">
-        <a href="https://github.com/liqiang372/easy-reactive" target="_blank">
-          Github
-        </a>
-      </div>
       <style jsx>{`
         .container {
           position: relative;
-          width: 260px;
-          box-shadow: 6px 0 6px rgba(0, 0, 0, 0.1);
-        }
-        ul {
-          display: flex;
-          flex-direction: column;
+          width: 220px;
+          box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.1);
         }
         li {
           list-style: none;
           margin-top: 1rem;
-        }
-
-        .github {
-          position: absolute;
-          bottom: 0;
-          width: 100%;
-          height: 50px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
         }
       `}</style>
     </div>
