@@ -12,7 +12,8 @@ export const SidePanel = memo(() => {
     'zip',
     'withLatestFrom',
     'combineLatest',
-    'forkJoin'
+    'forkJoin',
+    'mergeAll',
   ].map((link) => {
     return (
       <li className="my-2 list-none" key={link}>
