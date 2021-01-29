@@ -124,7 +124,7 @@ export default function Zip() {
   }, [zipQueue]);
 
   return (
-    <Layout>
+    <Layout title="zip">
       <main>
         <h1>Zip</h1>
         <div className="demo">

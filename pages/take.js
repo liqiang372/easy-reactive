@@ -72,7 +72,7 @@ export default function Take() {
                 height={20}
                 onEmit={onAEmit}
                 key="a"
-                {...getActiveStreamProps('a', activeStream)}
+                {...getActiveStreamProps('a' === activeStream)}
               />
               <g transform="translate(150, -20)">
                 <Operator width={90} height={90} tooltip="take" />

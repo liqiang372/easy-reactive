@@ -1,44 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 import { Operator } from '../components/Operator';
-import { Subject, concat } from 'rxjs';
+import { Subject, race } from 'rxjs';
 import { Stream } from '../components/Stream';
 import { Layout } from '../components/Layout';
 import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
-import { COLORS } from '../constants';
 import { Button } from '../components/Button';
 import { getActiveStreamProps } from '../utils';
 
 const DOC = `
-\`concat\` will subscribe the observable one by one. It won't subscribe next one until current one is completed.
-
-Following is a typical example
-
-~~~js
-// When a$ is subscribed, emit a value every 1 second, and emit 4 values in total.
-// 0----1s---- a1 ----1s---- a2 ----1s---- a3 ----1s---- a4|
-const a$ = interval(1000).pipe(
-  map((x) => 'a' + x),
-  take(4)
-);
-// When b$ is subscribed, emit a value every 200ms, and emit 2 values in total
-// 0----200ms---- b1 ----200ms---- b2|
-const b$ = interval(100).pipe(
-  map((x) => 'b' + x)
-  take(2)
-)
-
-// The result of following is 
-// 0----1s---- a1 ----1s---- a2 ----1s---- a3 ----1s---- a4 ----200ms---- b1 ----200ms---- b2|
-concat(a$, b$).subscribe((x) => {
-  console.log(x)
-})
-~~~
-
-Also note that if you use \`Subject\` as Observable. Before a$ is completed, any value emitted via \`b$.next\` will not be
-passed to concat as the subject is not subscribed yet. If you do want to output all values including the ones before subscribed,
-consider using \`BehaviorSubject\` or \`ReplaySubject\`
+\`race\` subscribes to all source observables, once one of source observables emits first. It will unsubscribe from other sources,
+and then becomes of a mirror of the one observable remained.
 `;
 
 let a$ = new Subject();
@@ -46,15 +19,22 @@ let b$ = new Subject();
 let c$ = new Subject();
 
 const INITIAL_QUEUE_STATE = {
-  activeStream: 'a'
+  activeStreams: ['a', 'b', 'c']
 };
 
 export default function Concat() {
   const [emit, tickA, tickB, tickC, tickD] = useStream(4);
-  const [{ activeStream }, setState] = useState(INITIAL_QUEUE_STATE);
+  const [{ activeStreams }, setState] = useState(INITIAL_QUEUE_STATE);
   const sub = useRef(null);
   const setUpOperator = () => {
-    return concat(a$, b$, c$).subscribe((x) => {
+    return race(a$, b$, c$).subscribe((x) => {
+      const label = x.key.split('_')[0];
+      setState((prevState) => {
+        return {
+          ...prevState,
+          activeStreams: [label]
+        }
+      })
       emit('d', { valueToEmit: x })
     })
   };
@@ -62,20 +42,7 @@ export default function Concat() {
   const onEmit = (which, data) => {
     emit(which, { clearBefore: data });
     const stream$ = which === 'a' ? a$ : which === 'b' ? b$ : c$;
-    if (data.text === 'C') {
-      stream$.complete();
-      // if which is not the last, then we increment the activeStream by 1 
-      if (which !== 'c') {
-        setState((prevState) => {
-          return {
-            ...prevState,
-            activeStream: String.fromCharCode(prevState.activeStream.charCodeAt(0) + 1)
-          }
-        })
-      }
-    } else {
-      stream$.next(data);
-    }
+    stream$.next(data);
   };
   const onDEmit = useCallback((d) => {
     emit('d', { clearBefore: d })
@@ -102,9 +69,9 @@ export default function Concat() {
   }, [])
 
   return (
-    <Layout title="concat">
+    <Layout title="race">
       <main>
-        <h1>concat</h1>
+        <h1>race</h1>
         <div className="demo">
           <svg className="animation">
             <g transform="translate(150, 100)">
@@ -115,7 +82,8 @@ export default function Concat() {
                 width={200}
                 height={20}
                 onEmit={(d) => onEmit('a', d)}
-                {...getActiveStreamProps('a' === activeStream)}
+                {...getActiveStreamProps(activeStreams.includes('a'))}
+                fill={undefined}
                 key="a"
               />
               <Stream
@@ -125,7 +93,8 @@ export default function Concat() {
                 width={200}
                 height={20}
                 onEmit={(d) => onEmit('b', d)}
-                {...getActiveStreamProps('b' === activeStream)}
+                {...getActiveStreamProps(activeStreams.includes('b'))}
+                fill={undefined}
                 key="b"
               />
               <Stream
@@ -135,11 +104,12 @@ export default function Concat() {
                 width={200}
                 height={20}
                 onEmit={(d) => onEmit('c', d)}
-                {...getActiveStreamProps('c' === activeStream)}
+                {...getActiveStreamProps(activeStreams.includes('c'))}
+                fill={undefined}
                 key="c"
               />
               <g transform="translate(200, -20)">
-                <Operator width={120} height={120} tooltip="concat" />
+                <Operator width={120} height={120} tooltip="race" />
                 <Stream
                   data={tickD}
                   x={124}
@@ -159,15 +129,8 @@ export default function Concat() {
           </div>
           <div className="btn-group">
             <Button onClick={() => emit('a')}>Emit A</Button>
-            <Button onClick={() => emit('a', { complete: true })} type="complete">Complete A</Button>
-          </div>
-          <div className="btn-group">
             <Button onClick={() => emit('b')}>Emit B</Button>
-            <Button onClick={() => emit('b', { complete: true })} type="complete">Complete B</Button>
-          </div>
-          <div className="btn-group">
             <Button onClick={() => emit('c')}>Emit C</Button>
-            <Button onClick={() => emit('c', { complete: true })} type="complete">Complete C</Button>
           </div>
         </div>
         <Markdown source={DOC} />
