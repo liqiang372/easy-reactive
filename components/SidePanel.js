@@ -1,7 +1,10 @@
 import React, { memo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router'
+import cns from 'classnames';
 
 export const SidePanel = memo(() => {
+  const router = useRouter();
   const links = [
     'debounceTime',
     'map',
@@ -16,9 +19,9 @@ export const SidePanel = memo(() => {
     'mergeAll',
   ].map((link) => {
     return (
-      <li className="my-2 list-none" key={link}>
+      <li className="px-4 py-2 list-none" key={link}>
         <Link href={`/${link}`}>
-          <a>{link}</a>
+          <a className={cns('text-gray-500', 'hover:text-gray-900', { 'text-blue-400': router.pathname.substring(1) === link })}>{link}</a>
         </Link>
       </li>
     )
