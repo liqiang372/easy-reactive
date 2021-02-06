@@ -6,7 +6,10 @@ export function useStream(numOfStreams) {
       .map(() => [])
   );
 
-  const emit = (label, options = { complete: false, valueToEmit: undefined }) => {
+  const emit = (
+    label,
+    options = { complete: false, valueToEmit: undefined }
+  ) => {
     if (label === 'reset') {
       updateTickList(
         Array(tickList.length)
@@ -21,7 +24,9 @@ export function useStream(numOfStreams) {
       return prevState.map((ticks, i) => {
         if (i === index) {
           if (options.clearBefore !== undefined) {
-            const index = ticks.findIndex((tick) => tick.key === options.clearBefore.key);
+            const index = ticks.findIndex(
+              (tick) => tick.key === options.clearBefore.key
+            );
             return ticks.slice(index);
           } else if (options.valueToEmit !== undefined) {
             return ticks.concat(options.valueToEmit);
@@ -38,7 +43,7 @@ export function useStream(numOfStreams) {
             return ticks.concat([
               {
                 key,
-                text
+                text,
               },
             ]);
           }
