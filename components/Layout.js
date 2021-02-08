@@ -4,7 +4,7 @@ import { Navbar } from './NavBar';
 import Head from 'next/head';
 
 export function Layout({ title, children }) {
-  var pageTitle = (title ? `${title} - ` : '') + 'Easy Reacative';
+  var pageTitle = (title ? `${title} - ` : '') + 'Easy Reactive';
   return (
     <div className="flex flex-col min-h-screen w-full max-w-8xl mx-auto">
       <Head>
