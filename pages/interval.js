@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Stream } from '../components/Stream';
 import { Layout } from '../components/Layout';
 import { Markdown } from '../components/Markdown';
@@ -18,6 +18,7 @@ interval(4000).subscribe((x) => {
 
 export default function Map() {
   const [emit, tickA] = useStream(2);
+  const [ticks, setTicks] = useState([{key: 1, value: 1}]);
 
   const onAEmit = (d) => {
     emit('a', { clearBefore: d });
@@ -39,8 +40,12 @@ export default function Map() {
                 onEmit={onAEmit}
               />
               <Timer
+                ticks={ticks}
                 onComplete={() => {
                   emit('a');
+                  setTicks((prevState) => {
+                    return [{key: (prevState[0].key + 1) % 2, value: 1}]
+                  })
                 }}
               />
             </g>

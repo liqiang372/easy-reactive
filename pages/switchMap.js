@@ -5,11 +5,13 @@ import { Stream } from '../components/Stream';
 import { Layout } from '../components/Layout';
 import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
-import { Gear } from '../components/Gear';
-import { useDebouncedCallback } from 'use-debounce';
 import { Button } from '../components/Button';
+import { Timer } from '../components/Timer';
 
 const DOC = `
+Unlike \`mergeMap\` that will subscribe to all internal Observables created, \`switchMap\` will discard(unsubscribe)
+previous Observable once a new one is created. It is often used to cancel http request. Even if your http utility
+doesn't support cancelation, \`switchMap\` can still be used to discard stale response and use the latest one.
 ~~~js
 const fetchMovie = (name) => {
   return new Prmose((resolve) => {
@@ -28,48 +30,30 @@ a$.pipe(
 })
 ~~~
 `;
-const INITIAL_STATE = {
-  rotate: false,
-};
 
 export default function Map() {
   const [emit, tickA, tickB] = useStream(2);
-  const [{ rotate }, setState] = useState(INITIAL_STATE);
+  const [ticks, setTicks] = useState([]);
 
   const reset = () => {
     d3.select('.animation').selectAll('*').interrupt();
-    setState(INITIAL_STATE);
     emit('reset');
+    setTicks([]);
   };
 
-  const setRotateDebounced = useDebouncedCallback(() => {
-    setState({
-      rotate: false,
-    });
-  }, 1000);
 
-  const onAEmit = useCallback(
-    (d) => {
-      setState({
-        rotate: true,
-      });
-      emit('a', { clearBefore: d });
-      setRotateDebounced.callback();
-      setTimeout(() => {
-        emit('b');
-      }, 1000);
-    },
-    [emit]
-  );
+  const onAEmit = (d) => {
+    setTicks([d]);
+  }
 
   const onBEmit = useCallback((d) => {
     emit('b', { clearBefore: d });
   });
 
   return (
-    <Layout title="map">
+    <Layout title="switchMap">
       <main>
-        <h1>map</h1>
+        <h1>switchMap</h1>
         <div className="demo">
           <svg className="animation">
             <g transform="translate(150, 100)">
@@ -83,8 +67,18 @@ export default function Map() {
                 key="a"
               />
               <g transform="translate(200, -20)">
-                <Operator width={90} height={90} tooltip="map" />
-                <Gear x={24} y={24} rotate={rotate} />
+                <Operator width={90} height={90} tooltip="switchMap" />
+                <Timer
+                  x={44}
+                  y={44}
+                  r={20}
+                  onComplete={() => {
+                    emit('b');
+                  }}
+                  ticks={ticks}
+                  showEmitAnimation
+                  removeAfterComplete
+                />
               </g>
               <Stream
                 data={tickB}
@@ -99,10 +93,14 @@ export default function Map() {
           </svg>
         </div>
         <div>
-          <Button type="emit" onClick={() => emit('a')}>
-            Emit A
-          </Button>
-          {/* <button onClick={reset}>Reset</button> */}
+          <div className="btn-group">
+            <Button type="emit" onClick={() => emit('a')}>
+              Emit A
+            </Button>
+            <Button type="reset" onClick={reset}>
+              Reset
+            </Button>
+          </div>
         </div>
         <Markdown source={DOC} />
       </main>

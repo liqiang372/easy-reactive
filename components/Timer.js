@@ -1,65 +1,83 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 
-export const Timer = ({ onComplete, x, y, r, strokeWidth, duration }) => {
+export const Timer = ({ onComplete, x, y, r, strokeWidth, duration, ticks, showEmitAnimation = false ,removeAfterComplete }) => {
   const perimeter = 2 * Math.PI * r;
   const gRef = useRef(null);
-  const circleRef = useRef(null);
   useEffect(() => {
-    if (gRef.current && circleRef.current) {
-      const elapse = d3.select(circleRef.current);
-      function startTimer() {
-        elapse
-          .attr('stroke-dashoffset', perimeter)
+    if (gRef.current) {
+      const timers = d3
+        .select(gRef.current)
+        .selectAll('g')
+        .data(ticks, (tick) => {
+          return tick.key
+        });
+      
+      const timerContainer = timers
+        .enter()
+        .append('g')
+      timerContainer
+        .append('circle')
+        .attr('r', r)
+        .attr('stroke', '#d7d7d7')
+        .attr('stroke-width', strokeWidth)
+        .attr('fill', 'transparent')
+
+      timerContainer
+        .append('circle')
+        .style('transform', 'rotateZ(-90deg)')
+        .attr('r', r)
+        .attr('stroke', '#f08d49')
+        .attr('stroke-width', strokeWidth)
+        .attr('fill', 'transparent')
+        .attr('stroke-dasharray', perimeter)
+        .attr('stroke-dashoffset', perimeter)
+        .transition()
+        .duration(duration)
+        .ease(d3.easeLinear)
+        .attr('stroke-dashoffset', 0)
+        .on('end', () => {
+          if(onComplete) {
+            onComplete();
+          }
+          if (removeAfterComplete) {
+            timerContainer
+              .transition()
+              .duration(500)
+              .ease(d3.easeBackIn)
+              .style('transform', 'scale(0.1)')
+              .remove();
+          }
+        })
+
+      let timersExist = timers.exit();
+      // stop existing transitions
+      timersExist
+        .selectAll('circle')
+        .transition()
+      if (showEmitAnimation) {
+        timersExist = timersExist
           .transition()
-          .ease(d3.easeLinear)
-          .attr('stroke-dashoffset', 0)
-          .duration(duration)
-          .on('end', () => {
-            if (onComplete) {
-              onComplete();
-            }
-            startTimer();
-          });
+          .duration(2000)
+          .ease(d3.easeCubicOut)
+          .style('transform', 'translate(100px, -100px) scale(0.1)')
       }
-      startTimer();
+      timersExist
+        .remove()
     }
-  }, []);
+  }, [ticks]);
 
   return (
-    <g ref={gRef}>
-      <circle
-        x={x}
-        y={x}
-        r={r}
-        stroke="#f2f2f1"
-        strokeWidth={strokeWidth}
-        fill="transparent"
-      />
-      <circle
-        ref={circleRef}
-        x={x}
-        y={y}
-        r={r}
-        stroke="#f08d49"
-        strokeWidth={strokeWidth}
-        fill="transparent"
-        strokeDasharray={perimeter}
-        className="elapse"
-      />
-      <style jsx>{`
-        .elapse {
-          transform: rotateZ(-90deg);
-        }
-      `}</style>
+    <g ref={gRef} transform={`translate(${x}, ${y})`}>
     </g>
   );
 };
 
 Timer.defaultProps = {
-  x: 50,
-  y: 50,
+  x: 0,
+  y: 0,
   r: 50,
   strokeWidth: 8,
   duration: 4000,
+  ticks: []
 };
