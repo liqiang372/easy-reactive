@@ -23,7 +23,7 @@ const fetchMovie = (name) => {
 }
 
 a$.pipe(
-  mergeAll((a) => from(fetchMovie(a)))
+  mergeMap((a) => from(fetchMovie(a)))
 ).subscribe((b) => {
   console.log(b);
 })
