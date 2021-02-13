@@ -82,14 +82,12 @@ of(1, 2, 3).pipe(
 )
 ~~~
 
+And since \`map\` + \`mergeAll\` is a so common combination, we have [mergeMap](http://easyreactive.com/mergeMap) to simplify operators.
+
 `;
 
 const a$ = new Subject();
 const b$ = new Subject();
-
-const INITIAL_STATE = {
-  rotate: false
-}
 
 export default function MergeAll() {
   const [emit, tickA, tickB, tickC] = useStream(3);

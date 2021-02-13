@@ -18,6 +18,7 @@ export const SidePanel = memo(() => {
     'combineLatest',
     'forkJoin',
     'mergeAll',
+    'mergeMap',
     'switchMap',
   ].map((link) => {
     return (

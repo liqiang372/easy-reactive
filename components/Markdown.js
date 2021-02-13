@@ -12,6 +12,8 @@ const renderers = {
 
 export const Markdown = memo((props) => {
   return (
-    <ReactMarkdown plugins={[gfm]} renderers={renderers} {...props} />
+    <div className="doc">
+      <ReactMarkdown plugins={[gfm]} renderers={renderers} {...props} />
+    </div>
   )
 });

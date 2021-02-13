@@ -63,3 +63,7 @@ main {
 .btn-group button{
   margin-right: 10px;
 }
+
+.doc a {
+  border-bottom: 1px dotted black;
+}

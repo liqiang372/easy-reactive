@@ -36,9 +36,9 @@ export const Timer = ({ onComplete, x, y, r, strokeWidth, duration, ticks, showE
         .duration(duration)
         .ease(d3.easeLinear)
         .attr('stroke-dashoffset', 0)
-        .on('end', () => {
+        .on('end', (d) => {
           if(onComplete) {
-            onComplete();
+            onComplete(d);
           }
           if (removeAfterComplete) {
             timerContainer

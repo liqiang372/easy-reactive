@@ -11,3 +11,7 @@ export const getActiveStreamProps = (isActiveStream) => {
     x: -10
   }
 }
+
+export const transformText = (tick, prefix) => {
+  return prefix + tick.substring(1);
+}

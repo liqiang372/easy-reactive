@@ -7,12 +7,10 @@ import { Markdown } from '../components/Markdown';
 import { useStream } from '../hooks/useStream';
 import { Button } from '../components/Button';
 import { Timer } from '../components/Timer';
-import { transformText } from '../utils';
+import { BouncingBalls } from '../components/BouncingBalls';
 
 const DOC = `
-Unlike \`mergeMap\` that will subscribe to all internal Observables created, \`switchMap\` will discard(unsubscribe)
-previous Observable once a new one is created. It is often used to cancel http request. Even if your http utility
-doesn't support cancelation, \`switchMap\` can still be used to discard stale response and use the latest one.
+\`mergeMap\` is a combination of \`map\` + \`mergeAll\`. 
 ~~~js
 const fetchMovie = (name) => {
   return new Prmose((resolve) => {
@@ -25,7 +23,16 @@ const fetchMovie = (name) => {
 }
 
 a$.pipe(
-  switchMap((a) => from(fetchMovie(a)))
+  mergeAll((a) => from(fetchMovie(a)))
+).subscribe((b) => {
+  console.log(b);
+})
+
+// is exactly the same as 
+
+a$.pipe(
+  map((a) => from(fetchMovie(a))),
+  mergeAll()
 ).subscribe((b) => {
   console.log(b);
 })
@@ -47,14 +54,18 @@ export default function Map() {
     setTicks([d]);
   }
 
-  const onBEmit = useCallback((d) => {
+  const onBEmit = (d) => {
     emit('b', { clearBefore: d });
-  });
+  };
+
+  const onMergeMapEmit = (d) => {
+    emit('b', { valueToEmit: d });
+  }
 
   return (
-    <Layout title="switchMap">
+    <Layout title="mergeMap">
       <main>
-        <h1>switchMap</h1>
+        <h1>mergeMap</h1>
         <div className="demo">
           <svg className="animation">
             <g transform="translate(150, 100)">
@@ -67,26 +78,13 @@ export default function Map() {
                 onEmit={onAEmit}
                 key="a"
               />
-              <g transform="translate(200, -20)">
-                <Operator width={90} height={90} tooltip="switchMap" />
-                <Timer
-                  x={44}
-                  y={44}
-                  r={20}
-                  onComplete={(d) => {
-                    emit('b', { valueToEmit: {
-                      ...d,
-                      text: transformText(d.text, 'b')
-                    }});
-                  }}
-                  ticks={ticks}
-                  showEmitAnimation
-                  removeAfterComplete
-                />
+              <g transform="translate(200, -70)">
+                <Operator width={200} height={200} tooltip="switchMap" />
+                <BouncingBalls x={10} y={15} ticks={ticks} width={160} onComplete={onMergeMapEmit}/>
               </g>
               <Stream
                 data={tickB}
-                x={294}
+                x={404}
                 y={10}
                 width={150}
                 height={20}
