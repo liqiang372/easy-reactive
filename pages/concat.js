@@ -106,7 +106,7 @@ export default function Concat() {
       <main>
         <h1>concat</h1>
         <div className="demo">
-          <svg className="animation" viewbox="0 0 800 300" width="100%" height="100%">
+          <svg className="animation" viewBox="0 0 800 300" width="100%" height="100%">
             <g transform="translate(150, 100)">
               <Stream
                 data={tickA}

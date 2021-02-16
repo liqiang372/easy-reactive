@@ -49,7 +49,7 @@ export default function DebounceTime() {
       <main>
         <h1>DebounceTime</h1>
         <div className="demo">
-          <svg ref={svgRef} className="animation" viewbox="0 0 800 300" width="100%" height="100%">
+          <svg ref={svgRef} className="animation" viewBox="0 0 800 300" width="100%" height="100%">
             <g>
               <Operator x={200} y={135} width={200} height={50} />
             </g>
