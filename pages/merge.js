@@ -19,10 +19,6 @@ merge(a$, b$).subscribe((x) => {
 const a$ = new Subject();
 const b$ = new Subject();
 
-const INITIAL_STATE = {
-  rotate: false
-}
-
 export default function Merge() {
   const [emit, tickA, tickB, tickC] = useStream(3);
   const sub = useRef(null);
@@ -68,7 +64,7 @@ export default function Merge() {
       <main>
         <h1>Merge</h1>
         <div className="demo">
-          <svg className="animation">
+          <svg className="animation" viewbox="0 0 800 300" width="100%" height="100%">
             <g transform="translate(150, 100)">
               <Stream
                 data={tickA}

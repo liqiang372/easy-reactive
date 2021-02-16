@@ -36,13 +36,17 @@ export const SidePanel = memo(() => {
     );
   });
   return (
-    <div className="container fixed h-full">
+    <div className="fixed hidden h-full overflow-y-auto sidePanel lg:block" id="sidePanel">
       <ul className="flex flex-col px-4">{links}</ul>
       <style jsx>{`
-        .container {
+        .sidePanel {
           width: 220px;
           box-shadow: 6px 6px 6px rgba(0, 0, 0, 0.1);
           z-index: 100;
+          background-color: white;
+        }
+        .sidePanel.open {
+          display: block;
         }
       `}</style>
     </div>

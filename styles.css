@@ -5,7 +5,7 @@
 
 @layer base {
   h1 {
-    @apply text-4xl my-4;
+    @apply my-4 text-4xl;
   }
   h2 {
     @apply text-2xl;
@@ -19,7 +19,7 @@
     max-width: 90rem;
   }
 }
-
+k
 html,
 body {
   padding: 0;
@@ -39,7 +39,13 @@ main {
   flex: 1 1 auto;
   padding: 1rem;
   max-width: 1024px;
-  margin-left: 220px;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  main {
+    margin-left: 220px;
+  }
 }
 
 .output-container {
@@ -50,10 +56,6 @@ main {
 
 .demo {
   position: relative;
-}
-
-.animation {
-  width: 800px;
   height: 300px;
 }
 
